@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Sprawdź, czy skrypt jest uruchamiany jako root
+chk_root () {
+  if [ ! $( id -u ) -eq 0 ]; then
+    echo "Musisz uruchomić jako root"
+    exit
+  fi
+}
+
+# Wywołaj funkcję sprawdzającą uprawnienia roota
+chk_root
+
+# Przyjmij parametr czasowy DURATION lub ustaw domyślną wartość na 5 sekund
+DURATION=$1
+if [ $# -ne 1 ]; then
+  DURATION=5
+fi
+
+# Uruchom Plymouth
+plymouthd
+plymouth --show-splash
+
+# Pętla aktualizująca efekt co sekundę przez określony czas
+for ((I=0; I<$DURATION; I++)); do
+  plymouth --update=test$I
+  sleep 1
+done
+
+# Zakończ program Plymouth
+plymouth quit
